@@ -9,9 +9,7 @@ type config struct {
 	Office      customers.Office `long:"office" description:"Office location {SF, Chicago, SurryHills, Dublin, London}"`
 	MaxDistance int              `short:"d" long:"max-invite-distance" description:"The largest distance (km) to invite customer to the office"`
 
-	File string `short:"f" long:"from-file" description:"File with customer records"`
-	URL  string `short:"u" long:"from-url" description:"Url to load customer records from"`
-
+	Input  string `short:"i" long:"input" description:"File with customer records"`
 	Output string `short:"o" long:"output" description:"Output file"`
 
 	LogLevel string `long:"loglevel" description:"Logging level for all subsystems {trace, debug, info, error, critical}"`
@@ -20,8 +18,9 @@ type config struct {
 var defconf = config{
 	Office:      customers.Dublin,
 	MaxDistance: 100,
-	File:        "customers.txt",
-	Output:      "invite-customers.txt",
+
+	Input:  "all-customers.txt",
+	Output: "invite-customers.txt",
 
 	LogLevel: "debug",
 }

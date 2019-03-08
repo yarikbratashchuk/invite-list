@@ -29,5 +29,8 @@ func main() {
 	customersLog.SetLevel(lvl)
 	customers.UseLogger(customersLog)
 
-	fmt.Println(conf)
+	// read customers from source  	
+	customers.
+	// calculate distances
+	// write customers to a destination file
 }
