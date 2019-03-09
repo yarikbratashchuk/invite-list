@@ -26,6 +26,53 @@ type Customer struct {
 // Location implements geo.Locator
 func (c Customer) Location() geo.Coords { return c.Coords }
 
+// InviteCustomers returns the list of customers who are closer
+// than maxDist meters to the office
+func InviteCustomers(cs []Customer, office Office, maxDist uint) []Customer {
+	log.Info("inviting customers")
+
+	inviteList := make([]Customer, 0, len(cs))
+
+	for _, c := range cs {
+		dist, err := geo.Distance(c, office)
+		if err != nil {
+			log.Errorf("skipping %v, err: %v", c, err)
+			continue
+		}
+		if dist > float64(maxDist) {
+			continue
+		}
+		log.Debugf("inviting %v", c)
+		inviteList = append(inviteList, c)
+	}
+
+	return inviteList
+}
+
+type customers []Customer
+
+// Len is part of sort.Interface
+func (cs customers) Len() int {
+	return len(cs)
+}
+
+// Swap is part of sort.Interface.
+func (cs customers) Swap(i, j int) {
+	cs[i], cs[j] = cs[j], cs[i]
+}
+
+// Less is part of sort.Interface.
+func (cs customers) Less(i, j int) bool {
+	return cs[i].ID < cs[j].ID
+}
+
+// SortCustomersByID sorts customers by ID in ascending order
+func SortCustomersByID(cs []Customer) {
+	log.Info("sorting customers")
+
+	sort.Sort(customers(cs))
+}
+
 // ReadCustomers reads customers from r. Each customer must be
 // on a separate line and be in a JSON format
 func ReadCustomers(r io.Reader) ([]Customer, error) {
@@ -78,6 +125,10 @@ func WriteCustomers(w io.Writer, cs []Customer) {
 func WriteCustomersConfig(w io.Writer, cs []Customer, config WriteConfig) {
 	log.Info("writing customers")
 
+	if len(cs) == 0 {
+		return
+	}
+
 	if config == 0 {
 		config = DefaultWriteConf
 	}
@@ -116,51 +167,4 @@ func WriteCustomersConfig(w io.Writer, cs []Customer, config WriteConfig) {
 	if padding {
 		w.Write([]byte("\n\n"))
 	}
-}
-
-// InviteCustomers returns the list of customers who are closer
-// than maxDist meters to the office
-func InviteCustomers(cs []Customer, office Office, maxDist uint) []Customer {
-	log.Info("inviting customers")
-
-	inviteList := make([]Customer, 0, len(cs))
-
-	for _, c := range cs {
-		dist, err := geo.Distance(c, office)
-		if err != nil {
-			log.Errorf("skipping %v, err: %v", c, err)
-			continue
-		}
-		if dist > float64(maxDist) {
-			continue
-		}
-		log.Debugf("inviting %v", c)
-		inviteList = append(inviteList, c)
-	}
-
-	return inviteList
-}
-
-type customers []Customer
-
-// Len is part of sort.Interface
-func (cs customers) Len() int {
-	return len(cs)
-}
-
-// Swap is part of sort.Interface.
-func (cs customers) Swap(i, j int) {
-	cs[i], cs[j] = cs[j], cs[i]
-}
-
-// Less is part of sort.Interface.
-func (cs customers) Less(i, j int) bool {
-	return cs[i].ID < cs[j].ID
-}
-
-// SortCustomersByID sorts customers by ID in ascending order
-func SortCustomersByID(cs []Customer) {
-	log.Info("sorting customers")
-
-	sort.Sort(customers(cs))
 }
