@@ -126,9 +126,15 @@ func InviteCustomers(cs []Customer, office Office, maxDist uint) []Customer {
 	inviteList := make([]Customer, 0, len(cs))
 
 	for _, c := range cs {
-		if geo.Distance(c, office) > float64(maxDist) {
+		dist, err := geo.Distance(c, office)
+		if err != nil {
+			log.Errorf("skipping %v, err: %v", c, err)
 			continue
 		}
+		if dist > float64(maxDist) {
+			continue
+		}
+		log.Debugf("inviting %v", c)
 		inviteList = append(inviteList, c)
 	}
 

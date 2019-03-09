@@ -1,6 +1,7 @@
 package business
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/yarikbratashchuk/invite-list/geo"
@@ -39,4 +40,20 @@ func (o Office) Location() geo.Coords {
 	officeLocationsMu.RUnlock()
 
 	return c
+}
+
+func init() {
+	errf := "invalid %s value for %s office"
+
+	// validating office coordinates
+	for o, v := range officeLocations {
+		if !geo.ValidLat(v.Lat) {
+			err := fmt.Sprintf(errf, "latitude", o)
+			panic(err)
+		}
+		if !geo.ValidLong(v.Long) {
+			err := fmt.Sprintf(errf, "longitude", o)
+			panic(err)
+		}
+	}
 }

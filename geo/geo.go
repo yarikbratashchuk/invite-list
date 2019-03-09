@@ -1,7 +1,10 @@
 // Package geo holds all GPS related stuff
 package geo
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 // Locator is used to get the location (GPS coordinates) of the object
 type Locator interface {
@@ -14,26 +17,52 @@ type Coords struct {
 	Long float64 `json:"longitude,string"`
 }
 
-const earthRadius float64 = 6378100
+// earthRadius is a mean earth radius in meters (by IUGG)
+const earthRadius float64 = 6371008.8
 
 // Distance function returns the distance (in meters) between loc1 and loc2
-// through the Haversin Distance Formula for great arc distance on a
-// sphere with accuracy for small distances
-// See http://en.wikipedia.org/wiki/Haversine_formula
-func Distance(loc1, loc2 Locator) float64 {
+//
+//
+// See http://en.wikipedia.org/wiki/Haversine_formula for details on formula.
+func Distance(loc1, loc2 Locator) (float64, error) {
 	l1, l2 := loc1.Location(), loc2.Location()
+
+	if !ValidLat(l1.Lat) || !ValidLong(l1.Long) {
+		return 0, fmt.Errorf("invalid coords %v", l1)
+	}
+	if !ValidLat(l2.Lat) || !ValidLong(l2.Long) {
+		return 0, fmt.Errorf("invalid coords %v", l2)
+	}
 
 	l1.Lat = l1.Lat * math.Pi / 180
 	l1.Long = l1.Long * math.Pi / 180
 	l2.Lat = l2.Lat * math.Pi / 180
 	l2.Long = l2.Long * math.Pi / 180
 
-	d := haversin(l2.Lat-l1.Lat) +
+	h := haversin(l2.Lat-l1.Lat) +
 		math.Cos(l1.Lat)*math.Cos(l2.Lat)*haversin(l2.Long-l1.Long)
 
-	return 2 * earthRadius * math.Asin(math.Sqrt(d))
+	dist := 2 * earthRadius * math.Asin(math.Sqrt(h))
+
+	return dist, nil
 }
 
 func haversin(theta float64) float64 {
 	return math.Pow(math.Sin(theta/2), 2)
+}
+
+// ValidLat returns true if lat is a valid decimal degree latitude value
+func ValidLat(lat float64) bool {
+	if lat < float64(-90) || lat > float64(90) {
+		return false
+	}
+	return true
+}
+
+// ValidLong returns true if lat is a valid decimal degree latitude value
+func ValidLong(long float64) bool {
+	if long < float64(-180) || long > float64(180) {
+		return false
+	}
+	return true
 }
