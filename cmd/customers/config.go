@@ -20,7 +20,7 @@ var defconf = config{
 	MaxDistance: 100,
 
 	Input:  "all-customers.txt",
-	Output: "invite-customers.txt",
+	Output: "",
 
 	LogLevel: "info",
 }

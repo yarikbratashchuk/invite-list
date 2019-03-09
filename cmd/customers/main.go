@@ -49,11 +49,15 @@ func main() {
 	}
 	defer inputf.Close()
 
-	outputf, err := os.Create(conf.Output)
-	if err != nil {
-		fatalf("creating %s: %v", conf.Output, err)
+	outputf := os.Stdout
+	if conf.Output != "" {
+		var err error
+		outputf, err = os.Create(conf.Output)
+		if err != nil {
+			fatalf("creating %s: %v", conf.Output, err)
+		}
+		defer outputf.Close()
 	}
-	defer outputf.Close()
 
 	customers, err := business.ReadCustomers(inputf)
 	if err != nil {
