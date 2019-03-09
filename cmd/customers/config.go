@@ -2,12 +2,12 @@ package main
 
 import (
 	flags "github.com/jessevdk/go-flags"
-	"github.com/yarikbratashchuk/invite-list/customers"
+	"github.com/yarikbratashchuk/invite-list/business"
 )
 
 type config struct {
-	Office      customers.Office `long:"office" description:"Office location {SF, Chicago, SurryHills, Dublin, London}"`
-	MaxDistance int              `short:"d" long:"max-invite-distance" description:"The largest distance (km) to invite customer to the office"`
+	Office      business.Office `long:"office" description:"Office location {SF, Chicago, SurryHills, Dublin, London}"`
+	MaxDistance uint            `short:"d" long:"max-invite-distance" description:"The largest distance (km) to invite customer to the office"`
 
 	Input  string `short:"i" long:"input" description:"File with customer records"`
 	Output string `short:"o" long:"output" description:"Output file"`
@@ -16,13 +16,13 @@ type config struct {
 }
 
 var defconf = config{
-	Office:      customers.Dublin,
+	Office:      business.Dublin,
 	MaxDistance: 100,
 
 	Input:  "all-customers.txt",
 	Output: "invite-customers.txt",
 
-	LogLevel: "debug",
+	LogLevel: "info",
 }
 
 func loadConfig() (*config, error) {
