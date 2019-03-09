@@ -9,7 +9,8 @@ $ make install
 ```
 and run it
 ```bash
-$ customers -h
+$ customers -h # help message
+$ customers    # actual command
 ```
 
 ### Greetings
