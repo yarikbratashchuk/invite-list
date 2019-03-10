@@ -22,13 +22,13 @@ func setupLog(dest io.Writer, loglevel string) {
 	logBackend := btclog.NewBackend(dest)
 	lvl, _ := btclog.LevelFromString(loglevel)
 
-	customersLog := logBackend.Logger("CUST")
+	businessLog := logBackend.Logger("BSNS")
 	log = logBackend.Logger("CUST")
 
-	customersLog.SetLevel(lvl)
+	businessLog.SetLevel(lvl)
 	log.SetLevel(lvl)
 
-	business.UseLogger(customersLog)
+	business.UseLogger(businessLog)
 }
 
 func main() {
