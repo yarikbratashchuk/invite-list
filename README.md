@@ -27,10 +27,10 @@ Help Options:
 and run it
 ```bash
 $ customers
-2019-03-10 02:02:58.134 [INF] CUST: reading customers
-2019-03-10 02:02:58.135 [INF] CUST: inviting customers
-2019-03-10 02:02:58.135 [INF] CUST: sorting customers
-2019-03-10 02:02:58.135 [INF] CUST: writing customers
+2019-03-10 11:22:03.939 [INF] BSNS: reading customers
+2019-03-10 11:22:03.941 [INF] BSNS: inviting customers
+2019-03-10 11:22:03.941 [INF] BSNS: sorting customers
+2019-03-10 11:22:03.941 [INF] BSNS: writing customers
 
 
         ID: 4           Name: Ian Kehoe
